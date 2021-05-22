@@ -1,0 +1,30 @@
+version: '3.4'
+services:
+
+   keycloak:
+      image: jboss/keycloak
+      environment:
+         KEYCLOAK_USER: admin
+         KEYCLOAK_PASSWORD: password123
+      ports:
+         - 8080:8080
+      command: -Dkeycloak.profile.feature.upload_scripts=enabled
+      volumes:
+         - "./keycloak.mv.db:/opt/jboss/keycloak/standalone/data/keycloak.mv.db"
+
+
+   demoapp:
+      entrypoint: /bin/bash
+      build:
+         context: .
+         dockerfile: Dockerfile
+         args:
+         - USERNAME=dev
+      command:  -c "sleep infinity"
+      user: dev
+      volumes:
+         - ./:/Project
+      environment:
+         TOKENURL: http://keycloak:8080/auth/realms/MONITORING/protocol/openid-connect/token
+         CLIENTSECRET: fbe69472-563d-4604-9336-1ac39cf1efa3
+         CLIENTID: alerts-ui
