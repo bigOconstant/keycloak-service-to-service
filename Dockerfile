@@ -14,6 +14,9 @@ RUN apt-get install pkg-config -y
 RUN apt-get install libssl-dev -y
 RUN apt-get install golang-go -y
 RUN apt-get -y install python3-pip
+RUN sudo apt install protobuf-compiler -y
+RUN sudo apt-get install jq -y;
+
 
 #install vcpkg package manager
 RUN git clone --depth 1 https://github.com/microsoft/vcpkg
