@@ -65,3 +65,4 @@ Keycloaks default H2 database file is stored by default in
 
 `/opt/jboss/keycloak/standalone/data/keycloak.mv.db`
 
+
