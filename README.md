@@ -1,6 +1,9 @@
 
 
 
+
+# oidc openid connect Example for service to service communication with Keycloak
+
 ## Setup
 
 Start up docker compose
@@ -11,17 +14,32 @@ Keycloak is running on [http://localhost:8080](http://localhost:8080)
 
 A database preloaded is provided in **keycloak.mv.db**.
 
-Realm MONITORING
-client alerts-ui
+**Realm** MONITORING
+**client** alerts-ui
 
-user: admin
-password: password123
+**user**: admin
+**password**: password123
 
 ## Code Examples (Get token with client secret)
 
 Enter main container with the command,
 
 `docker-compose exec demoapp /bin/bash`
+
+### Curl
+
+```bash
+curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d 'grant_type=client_credentials&client_id=alerts-ui&client_secret=fbe69472-563d-4604-9336-1ac39cf1efa3' \
+"http://keycloak:8080/auth/realms/MONITORING/protocol/openid-connect/token" 
+
+```
+
+If you have jq installed you can make it pretty and pipe it to jq. It comes installed in the container
+bash
+```
+curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d 'grant_type=client_credentials&client_id=alerts-ui&client_secret=fbe69472-563d-4604-9336-1ac39cf1efa3' \
+"http://keycloak:8080/auth/realms/MONITORING/protocol/openid-connect/token" | jq
+```
 
 ### C++
 
@@ -57,22 +75,7 @@ Run app
 
 `go run main.go`
 
-### Curl
-
-```bash
-curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d 'grant_type=client_credentials&client_id=alerts-ui&client_secret=fbe69472-563d-4604-9336-1ac39cf1efa3' \
-"http://keycloak:8080/auth/realms/MONITORING/protocol/openid-connect/token" 
-
-```
-
-If you have jq installed you can make it pretty and pipe it to jq. It comes installed in the container
-
-```
-curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d 'grant_type=client_credentials&client_id=alerts-ui&client_secret=fbe69472-563d-4604-9336-1ac39cf1efa3' \
-"http://keycloak:8080/auth/realms/MONITORING/protocol/openid-connect/token" | jq
-```
-
-## Test if token would authenticate
+## Test if a token would authenticate
 
 After you get a token, you can test whether or not it is a valid token. 
 A small http server is running on port 8083 and listening to the endpoint `v1/alerts`
@@ -87,7 +90,7 @@ curl -X POST localhost:8093/v1/alerts \
 
 Where **Foo** is the token from above
 
-Any failers will return the reason for failure. For example,
+If the token fails to authenticate the post will return the reason for failure. For example,
 
 ```bash 
 Auth Failed
@@ -100,10 +103,5 @@ Success will look like
 Verrification Successfull
 ```
 
-# Keycloak preset up
-
-Keycloaks default H2 database file is stored by default in 
-
-`/opt/jboss/keycloak/standalone/data/keycloak.mv.db`
 
 

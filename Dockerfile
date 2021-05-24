@@ -17,7 +17,7 @@ RUN apt install protobuf-compiler -y
 RUN apt-get install jq -y;
 RUN apt-get install systemctl -y
 RUN apt-get install systemd -y
-
+RUN apt-get install wget -y;
 
 #install vcpkg package manager
 RUN git clone --depth 1 https://github.com/microsoft/vcpkg
@@ -56,11 +56,10 @@ RUN sudo chown -R $USERNAME /Project
 
 WORKDIR /tmp
 
-RUN sudo apt-get install wget -y;
+
 RUN wget https://golang.org/dl/go1.15.12.linux-amd64.tar.gz
 RUN sudo tar -C /usr/local -xzf go1.15.12.linux-amd64.tar.gz
 WORKDIR /
-RUN sudo rm -rf /tmp
 
 #COPY ./authserver /home/$USERNAME/go/src/authserver
 RUN mkdir /home/$USERNAME/go
