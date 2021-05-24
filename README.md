@@ -20,13 +20,7 @@ A database preloaded is provided in **keycloak.mv.db**.
 **user**: admin
 **password**: password123
 
-## Code Examples (Get token with client secret)
-
-Enter main container with the command,
-
-`docker-compose exec demoapp /bin/bash`
-
-### Curl
+### Get token with client secret Curl
 
 ```bash
 curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d 'grant_type=client_credentials&client_id=alerts-ui&client_secret=fbe69472-563d-4604-9336-1ac39cf1efa3' \
@@ -40,6 +34,41 @@ bash
 curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d 'grant_type=client_credentials&client_id=alerts-ui&client_secret=fbe69472-563d-4604-9336-1ac39cf1efa3' \
 "http://keycloak:8080/auth/realms/MONITORING/protocol/openid-connect/token" | jq
 ```
+
+## Test if a token would authenticate
+
+After you get a token, you can test whether or not it is a valid token. 
+A small http server is running on port 8083 and listening to the endpoint `v1/alerts`
+
+### Curl command to validate token. 
+
+```bash
+
+curl -X POST localhost:8093/v1/alerts \
+-H 'Authorization: Bearer Foo'
+```
+
+Where **Foo** is the token from above
+
+If the token fails to authenticate the post will return the reason for failure. For example,
+
+```bash 
+Auth Failed
+oidc: token is expired (Token Expiry: 2021-05-24 01:28:36 +0000 UTC)
+```
+
+Success will look like 
+
+```
+Verrification Successfull
+```
+
+## Code Examples (Get token with client secret)
+
+Enter main container with the command,
+
+`docker-compose exec demoapp /bin/bash`
+
 
 ### C++
 
@@ -75,33 +104,7 @@ Run app
 
 `go run main.go`
 
-## Test if a token would authenticate
 
-After you get a token, you can test whether or not it is a valid token. 
-A small http server is running on port 8083 and listening to the endpoint `v1/alerts`
-
-### Curl command to validate token. 
-
-```bash
-
-curl -X POST localhost:8093/v1/alerts \
--H 'Authorization: Bearer Foo'
-```
-
-Where **Foo** is the token from above
-
-If the token fails to authenticate the post will return the reason for failure. For example,
-
-```bash 
-Auth Failed
-oidc: token is expired (Token Expiry: 2021-05-24 01:28:36 +0000 UTC)
-```
-
-Success will look like 
-
-```
-Verrification Successfull
-```
 
 
 
