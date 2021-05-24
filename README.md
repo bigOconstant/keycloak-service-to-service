@@ -2,7 +2,7 @@
 
 
 
-# oidc openid connect Example for service to service communication with Keycloak
+# Keycloak Service to Service examples and example code
 
 ## Setup
 
