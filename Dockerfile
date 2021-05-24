@@ -12,10 +12,11 @@ RUN apt-get install zip -y
 RUN apt-get install gdb -y
 RUN apt-get install pkg-config -y
 RUN apt-get install libssl-dev -y
-RUN apt-get install golang-go -y
 RUN apt-get -y install python3-pip
 RUN apt install protobuf-compiler -y
 RUN apt-get install jq -y;
+RUN apt-get install systemctl -y
+RUN apt-get install systemd -y
 
 
 #install vcpkg package manager
@@ -52,3 +53,33 @@ RUN sudo chown -R $USERNAME /vcpkg
 WORKDIR /Project
 
 RUN sudo chown -R $USERNAME /Project 
+
+WORKDIR /tmp
+
+RUN sudo apt-get install wget -y;
+RUN wget https://golang.org/dl/go1.15.12.linux-amd64.tar.gz
+RUN sudo tar -C /usr/local -xzf go1.15.12.linux-amd64.tar.gz
+WORKDIR /
+RUN sudo rm -rf /tmp
+
+#COPY ./authserver /home/$USERNAME/go/src/authserver
+RUN mkdir /home/$USERNAME/go
+RUN echo $USERNAME
+
+RUN sudo chown -R $USERNAME:$USERNAME /home/$USERNAME/go
+
+RUN echo "export PATH=$PATH:/usr/local/go/bin" >> ~/.profile
+RUN echo "export GOPATH=~/.go" >> ~/.profile
+
+WORKDIR /temp
+
+COPY ./authserver /temp
+RUN sudo /usr/local/go/bin/go build -o authserver
+
+WORKDIR /server
+RUN sudo cp /temp/authserver /server/authserver
+RUN sudo rm -rf /temp
+WORKDIR /Project
+
+# Couldn't get systemd to work, just gonna start a forked process in docker-compose
+#COPY ./authserver/authserver.service /etc/systemd/system/authserver.service

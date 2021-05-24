@@ -20,11 +20,15 @@ services:
          dockerfile: Dockerfile
          args:
          - USERNAME=dev
-      command:  -c "sleep infinity"
+      command:  -c "/server/authserver & sleep infinity" # runs a auth server on 8093 to test if tokens are valid.
       user: dev
       volumes:
          - ./:/Project
+         - ./authserver:/home/dev/go/src/authserver # Debug endpoint
+      ports: 
+         - 8093:8093
       environment:
          TOKENURL: http://keycloak:8080/auth/realms/MONITORING/protocol/openid-connect/token
          CLIENTSECRET: fbe69472-563d-4604-9336-1ac39cf1efa3
          CLIENTID: alerts-ui
+         OIDCAUTHISSUER: http://keycloak:8080/auth/realms/MONITORING

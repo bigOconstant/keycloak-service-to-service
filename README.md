@@ -19,8 +19,6 @@ password: password123
 
 ## Code Examples (Get token with client secret)
 
-
-
 Enter main container with the command,
 
 `docker-compose exec demoapp /bin/bash`
@@ -58,6 +56,49 @@ Enter golang code directory
 Run app
 
 `go run main.go`
+
+### Curl
+
+```bash
+curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d 'grant_type=client_credentials&client_id=alerts-ui&client_secret=fbe69472-563d-4604-9336-1ac39cf1efa3' \
+"http://keycloak:8080/auth/realms/MONITORING/protocol/openid-connect/token" 
+
+```
+
+If you have jq installed you can make it pretty and pipe it to jq. It comes installed in the container
+
+```
+curl -X POST -H "Content-Type: application/x-www-form-urlencoded" -d 'grant_type=client_credentials&client_id=alerts-ui&client_secret=fbe69472-563d-4604-9336-1ac39cf1efa3' \
+"http://keycloak:8080/auth/realms/MONITORING/protocol/openid-connect/token" | jq
+```
+
+## Test if token would authenticate
+
+After you get a token, you can test whether or not it is a valid token. 
+A small http server is running on port 8083 and listening to the endpoint `v1/alerts`
+
+### Curl command to validate token. 
+
+```bash
+
+curl -X POST localhost:8093/v1/alerts \
+-H 'Authorization: Bearer Foo'
+```
+
+Where **Foo** is the token from above
+
+Any failers will return the reason for failure. For example,
+
+```bash 
+Auth Failed
+oidc: token is expired (Token Expiry: 2021-05-24 01:28:36 +0000 UTC)
+```
+
+Success will look like 
+
+```
+Verrification Successfull
+```
 
 # Keycloak preset up
 

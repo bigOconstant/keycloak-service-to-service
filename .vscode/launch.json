@@ -5,10 +5,19 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Debug go",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "/home/dev/go/src/authserver/main.go",
+            "env": {},
+            "args": ["8094"]
+        },
+        {
             "name": "(gdb) Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/main",
+            "program": "${workspaceFolder}/cpp/build/main",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
